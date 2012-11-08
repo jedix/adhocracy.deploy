@@ -1,0 +1,65 @@
+### Localization
+d-i debian-installer/locale string en_US
+d-i console-keymaps-at/keymap select de-latin1-nodeadkeys
+d-i keyboard-configuration/xkb-keymap select de-latin1-nodeadkeys
+
+### Network
+d-i netcfg/choose_interface select auto
+d-i netcfg/get_hostname string adhocracy.vm
+d-i netcfg/get_domain string 
+d-i netcfg/wireless_wep string
+
+### Mirror settings
+# If you select ftp, the mirror/country string does not need to be set.
+d-i mirror/country string manual
+d-i mirror/http/hostname string ftp.de.debian.org
+d-i mirror/http/directory string /debian
+d-i mirror/http/proxy string
+
+### Account setup
+d-i passwd/root-login boolean true
+
+d-i passwd/root-password password adhocracy
+d-i passwd/root-password-again password adhocracy
+
+d-i passwd/user-fullname string Adhocracy
+d-i passwd/username string adhocracy
+d-i passwd/user-password password adhocracy
+d-i passwd/user-password-again password adhocracy
+
+### Clock and time zone setup
+d-i clock-setup/utc boolean true
+d-i time/zone string Europe/Berlin
+d-i clock-setup/ntp boolean true
+
+### Partitioning
+d-i partman-auto/method string regular
+d-i partman-auto/disk string /dev/sda
+#d-i partman-auto/choose_recipe select atomic
+d-i partman-auto/choose_recipe select All files in one partition (recommended for new users)
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+### Base system installation
+d-i base-installer/kernel/linux/initramfs-generators string initramfs-tools
+d-i base-installer/kernel/image string linux-image-2.6-486
+
+### Package selection
+tasksel tasksel/first multiselect standard, 
+d-i pkgsel/include string openssh-server build-essential
+d-i pkgsel/upgrade select full-upgrade
+
+popularity-contest popularity-contest/participate boolean false
+
+d-i grub-installer/only_debian boolean true
+d-i grub-installer/with_other_os boolean true
+
+### Finishing up the installation
+d-i finish-install/reboot_in_progress note
+
+### After-Installation script ###
+d-i preseed/late_command string in-target wget @@@POST-INSTALL-URL@@@ -O /etc/init.d/postinstallation; in-target chmod +x /etc/init.d/postinstallation; in-target update-rc.d postinstallation defaults
+
+
