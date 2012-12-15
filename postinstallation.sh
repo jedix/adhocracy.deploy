@@ -13,7 +13,7 @@ case "$1" in
   start)
 	aptitude -y install sudo && usermod -g sudo adhocracy
 	echo "adhocracy ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-    su - adhocracy -c "wget -nv https://raw.github.com/liqd/adhocracy.buildout/master/build_debian.sh -O build_debian.sh && sh build_debian.sh -m -A"
+    su - adhocracy -c "wget -nv https://raw.github.com/liqd/adhocracy.buildout/master/build_debian.sh -O build_debian.sh && sh build_debian.sh @@@BUILD-PARAMETERS@@@"
 	cat >> /home/adhocracy/adhocracy_buildout/parts/supervisor/supervisord.conf <<EOF
 [program:adhocracy]
 command = /home/adhocracy/adhocracy_buildout/bin/paster serve /home/adhocracy/adhocracy_buildout/etc/adhocracy.ini

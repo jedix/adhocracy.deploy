@@ -193,6 +193,7 @@ class VM(object):
         self.fileserver =  FileServer(self.tempdir, [preseed_filename, post_install_filename])
         
         hostname = self.vmconfig.get("hostname", "adhocracyvm")
+        build_parameter = self.vmconfig.get("build_parameters", "-m -A")
         preseed_url = "http://10.0.2.2:%s/%s" % (str(self.fileserver.port), preseed_filename)
         post_install_url = "http://10.0.2.2:%s/%s" % (str(self.fileserver.port), post_install_filename)
         
@@ -202,7 +203,14 @@ class VM(object):
         preseed_file = open(self.tempdir + "/" + preseed_filename, "w")
         preseed_file.write(preseed_file_content)
         preseed_file.close()
-        
+
+        post_install_file = open(self.tempdir + "/" + post_install_filename, "r")
+        post_install_file_content = post_install_file.read().replace("@@@BUILD-PARAMETERS@@@", build_parameters)
+        post_install_file.close()
+        post_install_file = open(self.tempdir + "/" + post_install_filename, "w")
+        post_install_file.write(post_install_file_content)
+        post_install_file.close()
+
         self.download(bootimage, "%s/netboot.tar.gz" % self.tempdir)
         tftp_path = os.getenv("HOME") + "/.VirtualBox/TFTP"
         if not os.path.exists(tftp_path):
