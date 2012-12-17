@@ -41,9 +41,6 @@ class SystemCheck(object):
             return False
         return True
         
-    def  check_configfile(self, configfile):
-        return True
-
 class Config(object):
     def __init__(self, configfile, section="SETTINGS"):
         self.config = ConfigParser.ConfigParser()
@@ -115,7 +112,7 @@ class VM(object):
         return output
 
     def get_unique_name(self):
-        name = "-".join([str(os.getpid()),str(int(time.time()))])
+        name = "-".join(["adhocracy",str(os.getpid()),time.strftime("%Y%m%d-%H%M%S")])
         if name in (vm[0] for vm in self.manager.get_vms()):
             print "Could not get a unique name. Please try again."
             exit(1)
@@ -192,7 +189,7 @@ class VM(object):
         self.fileserver =  FileServer(self.tempdir, [preseed_filename, post_install_filename])
         
         hostname = self.vmconfig.get("hostname", "adhocracyvm")
-        build_parameter = self.vmconfig.get("build_parameters", "-m -A")
+        build_parameters = self.vmconfig.get("build_parameters", "-m -A")
         preseed_url = "http://10.0.2.2:%s/%s" % (str(self.fileserver.port), preseed_filename)
         post_install_url = "http://10.0.2.2:%s/%s" % (str(self.fileserver.port), post_install_filename)
         
@@ -321,8 +318,6 @@ def main(argv):
             
     check = SystemCheck()
     if not check.passed:
-        exit(1)
-    if not check.check_configfile(configfile):
         exit(1)
     if check_config:
         exit(0)
