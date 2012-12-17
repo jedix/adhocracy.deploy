@@ -14,7 +14,6 @@ import urllib
 import urlparse
 import xml.dom.minidom as dom
 from threading import Thread
-from time import sleep
 
 class SystemCheck(object):
     def __init__(self):
@@ -179,7 +178,7 @@ class VM(object):
 
     def stop_vm(self):
         self.vboxmanage(["controlvm", self.name, "poweroff"])
-        sleep(4)
+        time.sleep(4)
 
     def prepare_preseed(self):
         dist = self.vmconfig.get("dist", "squeeze")
